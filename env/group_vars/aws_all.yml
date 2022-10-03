@@ -1,6 +1,6 @@
 ---
 # Custom
-bucket_name: 'octopus-frontend'
+bucket_name: 'bolt-frontend'
 
 # CloudFormation
 team_prefix: 'api-integrations'
