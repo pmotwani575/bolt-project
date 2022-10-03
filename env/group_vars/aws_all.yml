@@ -1,0 +1,19 @@
+---
+# Custom
+bucket_name: 'octopus-frontend'
+
+# CloudFormation
+team_prefix: 'api-integrations'
+aws_region: 'eu-west-1'
+aws_profile: 'publicapi'
+
+app_name: 'octopus-frontend'
+app_state: 'present'
+
+cf_tpl_paramters:
+  S3BucketName: '{{ bucket_name }}-{{ ansible_host }}'
+
+cf_stack_tags:
+  project: '{{ app_name }}'
+  team: '{{ team_prefix }}'
+  environment: '{{ ansible_host }}'

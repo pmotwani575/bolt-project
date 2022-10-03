@@ -1,0 +1,146 @@
+AWSTemplateFormatVersion: 2010-09-09
+Description: CloudFront Distribution CORS enabled S3 Bucket
+Parameters:
+  S3BucketName:
+    Type: String
+    Description: Name of the AWS S3 bucket
+    AllowedPattern: '[a-z0-9\-]+'
+
+  S3BucketAccessControl:
+    Type: String
+    Description: Permissions for the AWS S3 bucket
+    AllowedValues: [ Private, PublicRead, PublicReadWrite, AuthenticatedRead, LogDeliveryWrite, BucketOwnerRead, BucketOwnerFullControl ]
+    Default: Private
+
+  AwsCertificateArn:
+    Description: ACM Certificate Arn from us-east-1
+    Default: "arn:aws:acm:us-east-1:230849868761:certificate/a4592ae2-212c-4f2e-9bf9-cf3c2da4e038"
+    Type: String
+
+  CloudFrontHostedZoneId:
+    Description: Hosted Zone Id from CloudFront
+    Default: "Z2FDTNDATAQYW2"
+    Type: String
+
+  ZoneName:
+    Description: Name of the zone (account domain)
+    Default: "publicapi.searchmetrics.com"
+    Type: String
+
+Resources:
+  S3Bucket:
+    Type: AWS::S3::Bucket
+    Properties:
+      BucketName: !Ref S3BucketName
+      AccessControl: !Ref S3BucketAccessControl
+      # enable cross origin requests sharing (CORS)
+      CorsConfiguration:
+        CorsRules:
+          - AllowedHeaders:
+            - '*'
+            AllowedOrigins:
+            - '*'
+            AllowedMethods:
+            - 'GET'
+            MaxAge: '3600'
+
+  S3BucketPolicy:
+    Type: AWS::S3::BucketPolicy
+    Properties:
+      PolicyDocument:
+        Version: 2012-10-17
+        Statement:
+          - Effect: Allow
+            Principal:
+              AWS: !Sub "arn:aws:iam::cloudfront:user/CloudFront Origin Access Identity ${CloudFrontOriginIdentity}"
+            Action: 's3:GetObject'
+            Resource: !Sub 'arn:aws:s3:::${S3Bucket}/*'
+      Bucket: !Ref S3Bucket
+
+  CloudFrontOriginIdentity:
+    Type: AWS::CloudFront::CloudFrontOriginAccessIdentity
+    Properties:
+      CloudFrontOriginAccessIdentityConfig:
+        Comment: 'origin identity'
+
+  CloudFrontDistribution:
+    Type: AWS::CloudFront::Distribution
+    Properties:
+      DistributionConfig:
+        Aliases:
+          - !Sub '${S3Bucket}.${ZoneName}'
+        Enabled: True
+        IPV6Enabled: True
+        HttpVersion: http2
+        PriceClass: PriceClass_100
+        Origins:
+          - DomainName: !GetAtt S3Bucket.RegionalDomainName
+            Id: !Sub 'S3-origin-${S3Bucket}'
+            S3OriginConfig:
+              OriginAccessIdentity: !Sub 'origin-access-identity/cloudfront/${CloudFrontOriginIdentity}'
+        ViewerCertificate:
+          MinimumProtocolVersion: TLSv1.2_2019
+          SslSupportMethod: sni-only
+          AcmCertificateArn: !Ref AwsCertificateArn
+        DefaultCacheBehavior:
+          TargetOriginId: !Sub 'S3-origin-${S3Bucket}'
+          ViewerProtocolPolicy: redirect-to-https
+          # 'Managed-CORS-S3Origin'
+          # https://docs.aws.amazon.com/AmazonCloudFront/latest/DeveloperGuide/using-managed-origin-request-policies.html
+          OriginRequestPolicyId: 88a5eaf4-2fd4-4709-b370-b4c650ea3fcf
+          CachePolicyId: !Ref CDNCachePolicy
+          DefaultTTL: 3600
+          MinTTL: 0
+          MaxTTL: 31536000
+          Compress: True
+          AllowedMethods:
+            - GET
+            - HEAD
+          CachedMethods:
+            - GET
+            - HEAD
+          ForwardedValues:
+            QueryString: 'true'
+            Cookies:
+              Forward: none
+
+  CDNCachePolicy:
+    Type: AWS::CloudFront::CachePolicy
+    Properties:
+      CachePolicyConfig:
+        DefaultTTL: 86400
+        MaxTTL: 31536000
+        MinTTL: 1
+        Name: "StandardCachePolicy"
+        ParametersInCacheKeyAndForwardedToOrigin:
+          CookiesConfig:
+            CookieBehavior: all
+          EnableAcceptEncodingBrotli: true
+          EnableAcceptEncodingGzip: true
+          HeadersConfig:
+            HeaderBehavior: "whitelist"
+            Headers: ["cache-control"]
+          QueryStringsConfig:
+            QueryStringBehavior: all
+
+  Route53SubAccountDomainName:
+    Type: AWS::Route53::RecordSet
+    Properties:
+      AliasTarget:
+        HostedZoneId: !Ref CloudFrontHostedZoneId
+        EvaluateTargetHealth: False
+        DNSName: !GetAtt CloudFrontDistribution.DomainName
+      HostedZoneName: !Sub '${ZoneName}.'
+      Name: !Sub '${S3Bucket}.${ZoneName}'
+      Type: A
+
+Outputs:
+  S3BucketName:
+    Value: !Ref S3Bucket
+    Description: Name of the CORS enabled AWS S3 bucket
+  CloudFrontDistributionOrigin:
+    Value: !Ref CloudFrontDistribution
+    Description: Origin of the CloudFront distribution
+  Route53RecordsetName:
+    Value: !Ref Route53SubAccountDomainName
+    Description: Name of the Route53 recordset
