@@ -1,13 +1,13 @@
 ---
 # Custom
-bucket_name: 'octopus-frontend'
+bucket_name: 'bolt-frontend'
 
 # CloudFormation
-team_prefix: 'api-integrations'
+team_prefix: 'bolt'
 aws_region: 'eu-west-1'
-aws_profile: 'publicapi'
+aws_profile: 'bolt'
 
-app_name: 'octopus-frontend'
+app_name: 'bolt-frontend'
 app_state: 'present'
 
 cf_tpl_paramters:
