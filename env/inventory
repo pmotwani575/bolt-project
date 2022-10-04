@@ -1,2 +1,4 @@
-production
-staging
+[aws_all]
+shared
+# production
+# staging
