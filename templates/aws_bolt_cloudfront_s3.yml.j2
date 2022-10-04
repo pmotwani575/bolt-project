@@ -14,7 +14,7 @@ Parameters:
 
   AwsCertificateArn:
     Description: ACM Certificate Arn from us-east-1
-    Default: "arn:aws:acm:us-east-1:935819310842:certificate/c038313c-7fd2-41eb-948a-b1d3838e5a48"
+    Default: "arn:aws:acm:us-east-1:935819310842:certificate/4a1d81e3-c3c8-4a6a-acac-d8ee3e69fdeb"
     Type: String
 
   CloudFrontHostedZoneId:
@@ -79,7 +79,7 @@ Resources:
             S3OriginConfig:
               OriginAccessIdentity: !Sub 'origin-access-identity/cloudfront/${CloudFrontOriginIdentity}'
         ViewerCertificate:
-          MinimumProtocolVersion: TLSv1.2_2019
+          MinimumProtocolVersion: TLSv1.2_2021
           SslSupportMethod: sni-only
           AcmCertificateArn: !Ref AwsCertificateArn
         DefaultCacheBehavior:
@@ -90,7 +90,7 @@ Resources:
           OriginRequestPolicyId: 88a5eaf4-2fd4-4709-b370-b4c650ea3fcf
           CachePolicyId: !Ref CDNCachePolicy
           DefaultTTL: 3600
-          MinTTL: 0
+          MinTTL: 3600
           MaxTTL: 31536000
           Compress: True
           AllowedMethods:
