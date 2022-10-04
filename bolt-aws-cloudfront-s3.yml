@@ -1,14 +1,14 @@
 ---
 #
-# ansible-playbook -i env/inventory bolt-aws-cloudfront-s3.yml 
+# ansible-playbook -i env/inventory bolt-aws-cloudfront-s3.yml -l shared
 
-- name: 'Botl AWS CloudFront S3'
+- name: 'Bolt AWS CloudFront S3'
   gather_facts: false
   hosts: 'aws_all'
   connection: 'local'
 
   tasks:
-    - name: 'Provision a AWS S3 bucket (+ expose it via a CloudFront distribution) to store and access files'
+    - name: 'Provision a AWS S3 bucket (+ expose it via a CloudFront distribution) to store and accessfiles'
       cloudformation:
         stack_name: '{{ app_name }}-stack'
         state: '{{ app_state }}'
@@ -16,5 +16,4 @@
         profile: '{{ aws_profile }}'
         template_body: "{{lookup('template', 'templates/aws_bolt_cloudfront_s3.yml.j2')}}"
         template_parameters: '{{ cf_tpl_paramters }}'
-        tags: '{{ cf_stack_tags }}'
         termination_protection: true
