@@ -2,7 +2,7 @@
 
 # Prerequisite
 - AWS Account 
-- IAM Root user Credentials or SAML IAM role or IAM user with sufficient right , If not then we need to create new AWS Account , pls follow below 
+- IAM Root user Credentials or  IAM role or IAM user with sufficient right , If not then we need to create new AWS Account , pls follow below 
 
 
 # Overview
