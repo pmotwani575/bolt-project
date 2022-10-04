@@ -60,5 +60,19 @@ It can be possible however with some more investigation below -
  
 - Since Cloud formation do not work with Cross account Exports , we can create a dummy S3 parameter in the master account ( where the cloud front is) and using that dummy parameter we can import S3 in the ansible template ( which is submitted ) 
 
+# Testing 
+
+As per the assignment requirement  , We can sucessfully browse the files with the additional domain name ( bolt-frontend-shared.blt.searchmetrics.com) 
+, In my case I browsed and access the pdf file  https://bolt-frontend-shared.blt.searchmetrics.com/AWS%20Certified%20Solutions%20Architect%20-%20Professional%20certificate.pdf
+
+Please note this AWS Certificate PDF file I uploaded on S3 bucket first 
+
+# Important 
+
+Also see the working screenshot sent in the email 
+Architecture Diagram PDF attached in the email .
+
+
+
 
 
