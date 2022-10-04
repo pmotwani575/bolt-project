@@ -1,10 +1,8 @@
 # Infrastructure
 
 # Prerequisite
-To connect with AWS make sure that valid credentials that is we need to configure AWS local profile , for that we need to have
-- AWS ACCESS KEY
-- AWS SECRET KEY
-- PROFILE NAME and Default region ( for my example I have created on my account and profile name is ITP )
+- AWS Account 
+- IAM Root user Credentials or SAML IAM role or IAM user with sufficient right , If not then we need to create new AWS Account , pls follow below 
 
 
 # Overview
