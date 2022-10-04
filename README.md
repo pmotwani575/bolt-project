@@ -69,7 +69,7 @@ Please note this AWS Certificate PDF file I uploaded on S3 bucket first
 
 # Important 
 
-Also see the working screenshot sent in the email 
+Also see the working screenshot sent in the email , 
 Architecture Diagram PDF attached in the email .
 
 
