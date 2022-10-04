@@ -3,17 +3,14 @@
 bucket_name: 'bolt-frontend'
 
 # CloudFormation
-team_prefix: 'bolt'
+#team_prefix: 'bolt'
 aws_region: 'eu-west-1'
-aws_profile: 'bolt'
+aws_profile: 'itp'
 
-app_name: 'bolt-frontend'
+app_name: 'bolt-fe'
 app_state: 'present'
 
 cf_tpl_paramters:
   S3BucketName: '{{ bucket_name }}-{{ ansible_host }}'
 
-cf_stack_tags:
-  project: '{{ app_name }}'
-  team: '{{ team_prefix }}'
-  environment: '{{ ansible_host }}'
+
