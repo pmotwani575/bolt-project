@@ -71,8 +71,13 @@
 
  Also see the working screenshot sent in the email , 
  Architecture Diagram PDF attached in the email .
+ 
+ # Architectue 
 
 
+Attached in email Assuming the real problem ( multi account solution ) 
+- Ingress account for Cloud front
+- Internal account having s3 bucket 
 
 
 
